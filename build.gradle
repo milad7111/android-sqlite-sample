@@ -19,3 +19,7 @@ allprojects {
         google()
     }
 }
+
+ext {
+    roomVersion = '1.0.0-alpha4'
+}

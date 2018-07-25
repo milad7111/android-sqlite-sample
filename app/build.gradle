@@ -6,11 +6,26 @@ android {
 
     defaultConfig {
         applicationId "com.sample.foo.sqliteexample"
-        minSdkVersion 14
+        minSdkVersion 17
         targetSdkVersion 27
         versionCode 1
         versionName "1.0"
+
+        // used by Room, to test migrations
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = ["room.schemaLocation":
+                                     "$projectDir/schemas".toString()]
+            }
+        }
     }
+
+    // used by Room, to test migrations
+    sourceSets {
+        androidTest.assets.srcDirs +=
+                files("$projectDir/schemas".toString())
+    }
+
     buildTypes {
         release {
             minifyEnabled false
@@ -22,4 +37,10 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'com.android.support:appcompat-v7:27.1.1'
+
+    //noinspection GradleDependency
+    implementation "android.arch.persistence.room:runtime:$rootProject.roomVersion"
+
+    annotationProcessor "android.arch.persistence.room:compiler:$rootProject.roomVersion"
+    androidTestImplementation "android.arch.persistence.room:testing:$rootProject.roomVersion"
 }
