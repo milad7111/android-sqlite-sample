@@ -22,7 +22,7 @@ public interface PersonDAO {
     public void delete(Person persons);
 
     @Query("SELECT * FROM Person")
-    public List<Person> getContacts();
+    public List<Person> getPersons();
 
     @Query("SELECT * FROM Person WHERE _id = :id")
     public Person getPersonWithId(String id);

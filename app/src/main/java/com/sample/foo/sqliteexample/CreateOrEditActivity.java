@@ -12,9 +12,11 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import room.classes.Person;
+
 public class CreateOrEditActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private ExampleDBHelper dbHelper;
+    //    private ExampleDBHelper dbHelper;
     EditText nameEditText;
     EditText genderEditText;
     EditText ageEditText;
@@ -23,14 +25,18 @@ public class CreateOrEditActivity extends AppCompatActivity implements View.OnCl
     LinearLayout buttonLayout;
     Button editButton, deleteButton;
 
-    int personID;
+    int personPosition;
+    Person mPersonObject;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit);
 
-        personID = getIntent().getIntExtra(MainActivity.KEY_EXTRA_CONTACT_ID, 0);
+        personPosition = getIntent().getIntExtra(MainActivity.KEY_EXTRA_CONTACT_ID, -1);
+
+        if (personPosition > -1)
+            mPersonObject = MainActivity.mPersonDAO.getPersons().get(personPosition);
 
         nameEditText = findViewById(R.id.editTextName);
         genderEditText = findViewById(R.id.editTextGender);
@@ -45,30 +51,30 @@ public class CreateOrEditActivity extends AppCompatActivity implements View.OnCl
         editButton.setOnClickListener(this);
         deleteButton.setOnClickListener(this);
 
-        dbHelper = new ExampleDBHelper(this);
+//        dbHelper = new ExampleDBHelper(this);
 
-        if (personID > 0) {
+        if (personPosition > -1) {
             saveButton.setVisibility(View.GONE);
             buttonLayout.setVisibility(View.VISIBLE);
 
-            Cursor rs = dbHelper.getPerson(personID);
-            rs.moveToFirst();
-            String personName = rs.getString(rs.getColumnIndex(ExampleDBHelper.PERSON_COLUMN_NAME));
-            String personGender = rs.getString(rs.getColumnIndex(ExampleDBHelper.PERSON_COLUMN_GENDER));
-            int personAge = rs.getInt(rs.getColumnIndex(ExampleDBHelper.PERSON_COLUMN_AGE));
-            if (!rs.isClosed()) {
-                rs.close();
-            }
+//            Cursor rs = dbHelper.getPerson(personID);
+//            rs.moveToFirst();
+//            String personName = rs.getString(rs.getColumnIndex(ExampleDBHelper.PERSON_COLUMN_NAME));
+//            String personGender = rs.getString(rs.getColumnIndex(ExampleDBHelper.PERSON_COLUMN_GENDER));
+//            int personAge = rs.getInt(rs.getColumnIndex(ExampleDBHelper.PERSON_COLUMN_AGE));
+//            if (!rs.isClosed()) {
+//                rs.close();
+//            }
 
-            nameEditText.setText(personName);
+            nameEditText.setText(mPersonObject.getName());
             nameEditText.setFocusable(false);
             nameEditText.setClickable(false);
 
-            genderEditText.setText((CharSequence) personGender);
+            genderEditText.setText(mPersonObject.getGender());
             genderEditText.setFocusable(false);
             genderEditText.setClickable(false);
 
-            ageEditText.setText((CharSequence) (personAge + ""));
+            ageEditText.setText(mPersonObject.getAge() + "");
             ageEditText.setFocusable(false);
             ageEditText.setClickable(false);
         }
@@ -100,7 +106,8 @@ public class CreateOrEditActivity extends AppCompatActivity implements View.OnCl
                 builder.setMessage(R.string.deletePerson)
                         .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
-                                dbHelper.deletePerson(personID);
+//                                dbHelper.deletePerson(personID);
+                                MainActivity.mPersonDAO.delete(mPersonObject);
                                 Toast.makeText(getApplicationContext(), "Deleted Successfully", Toast.LENGTH_SHORT).show();
                                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -120,28 +127,33 @@ public class CreateOrEditActivity extends AppCompatActivity implements View.OnCl
     }
 
     public void persistPerson() {
-        if (personID > 0) {
-            if (dbHelper.updatePerson(personID, nameEditText.getText().toString(),
-                    genderEditText.getText().toString(),
-                    Integer.parseInt(ageEditText.getText().toString()))) {
-                Toast.makeText(getApplicationContext(), "Person Update Successful", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(intent);
-            } else {
-                Toast.makeText(getApplicationContext(), "Person Update Failed", Toast.LENGTH_SHORT).show();
-            }
-        } else {
-            if (dbHelper.insertPerson(nameEditText.getText().toString(),
-                    genderEditText.getText().toString(),
-                    Integer.parseInt(ageEditText.getText().toString()))) {
-                Toast.makeText(getApplicationContext(), "Person Inserted", Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(getApplicationContext(), "Could not Insert person", Toast.LENGTH_SHORT).show();
-            }
+        if (personPosition > -1) {
+//            if (dbHelper.updatePerson(personID, nameEditText.getText().toString(),
+            MainActivity.mPersonDAO.update(mPersonObject);
+//                    genderEditText.getText().toString(),
+//                    Integer.parseInt(ageEditText.getText().toString()))
+
+            Toast.makeText(getApplicationContext(), "Person Update Successful", Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
+//            } else {
+//                Toast.makeText(getApplicationContext(), "Person Update Failed", Toast.LENGTH_SHORT).show();
+//            }
+        } else {
+            Person mNewPersonObject = new Person(nameEditText.getText().toString(), genderEditText.getText().toString(), Integer.parseInt(ageEditText.getText().toString()));
+            MainActivity.mPersonDAO.insert(mNewPersonObject);
+            Toast.makeText(getApplicationContext(), "Person Inserted", Toast.LENGTH_SHORT).show();
         }
+//            if (dbHelper.insertPerson(nameEditText.getText().toString(),
+//                    genderEditText.getText().toString(),
+//                    Integer.parseInt(ageEditText.getText().toString()))) {
+
+//            } else {
+//                Toast.makeText(getApplicationContext(), "Could not Insert person", Toast.LENGTH_SHORT).show();
+//            }
+        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
     }
 }

@@ -14,6 +14,7 @@ import room.dao.PersonDAO;
 @Database(entities = {Person.class}, version = 3)
 public abstract class AppDatabase extends RoomDatabase {
     private static AppDatabase INSTANCE;
+
     public abstract PersonDAO getPersonDAO();
 
     private static final Object myDB = new Object();
@@ -42,6 +43,7 @@ public abstract class AppDatabase extends RoomDatabase {
             if (INSTANCE == null) {
                 INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
                         AppDatabase.class, "RoomAppDatabase.db")
+                        .allowMainThreadQueries()
                         .addMigrations(MIGRATION_2_3)
                         .build();
             }

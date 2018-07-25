@@ -54,12 +54,6 @@ public class ExampleDBHelper extends SQLiteOpenHelper {
         return true;
     }
 
-    public int numberOfRows() {
-        SQLiteDatabase db = this.getReadableDatabase();
-        int numRows = (int) DatabaseUtils.queryNumEntries(db, PERSON_TABLE_NAME);
-        return numRows;
-    }
-
     public boolean updatePerson(Integer id, String name, String gender, int age) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();

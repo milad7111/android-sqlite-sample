@@ -36,11 +36,13 @@ public class Person {
         mAge = age;
     }
 
-    public Person(String id, String name, String gender, int age) {
-        this.mId = id;
-        this.mName = name;
-        this.mGender = gender;
-        this.mAge = age;
+    @NonNull
+    public String getId() {
+        return mId;
+    }
+
+    public void setId(@NonNull String mId) {
+        this.mId = mId;
     }
 
     public String getName() {
