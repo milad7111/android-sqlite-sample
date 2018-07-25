@@ -1,4 +1,5 @@
 <resources>
+
     <string name="app_name">SqliteExample</string>
     <string name="title_activity_main">MainActivity</string>
 
@@ -13,9 +14,9 @@
     <string name="gender">Gender</string>
     <string name="age">Age</string>
 
-
     <string name="deletePerson">Confirm person deletion.</string>
     <string name="yes">Confirm</string>
     <string name="no">Cancel</string>
     <string name="title_activity_activity_edit">CreateOrEditActivity</string>
+
 </resources>

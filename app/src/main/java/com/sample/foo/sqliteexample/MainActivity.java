@@ -1,6 +1,5 @@
 package com.sample.foo.sqliteexample;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -10,7 +9,6 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
-
 
 public class MainActivity extends AppCompatActivity {
     public final static String KEY_EXTRA_CONTACT_ID = "KEY_EXTRA_CONTACT_ID";
@@ -23,7 +21,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Button button = (Button) findViewById(R.id.addNew);
+        Button button = findViewById(R.id.addNew);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -36,18 +34,18 @@ public class MainActivity extends AppCompatActivity {
         dbHelper = new ExampleDBHelper(this);
 
         final Cursor cursor = dbHelper.getAllPersons();
-        String [] columns = new String[] {
+        String[] columns = new String[]{
                 ExampleDBHelper.PERSON_COLUMN_ID,
                 ExampleDBHelper.PERSON_COLUMN_NAME
         };
-        int [] widgets = new int[] {
+        int[] widgets = new int[]{
                 R.id.personID,
                 R.id.personName
         };
 
         SimpleCursorAdapter cursorAdapter = new SimpleCursorAdapter(this, R.layout.person_info,
                 cursor, columns, widgets, 0);
-        listView = (ListView)findViewById(R.id.listView1);
+        listView = findViewById(R.id.listView1);
         listView.setAdapter(cursorAdapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
@@ -61,7 +59,5 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
     }
-
 }

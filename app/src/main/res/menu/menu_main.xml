@@ -3,8 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.sample.foo.sqliteexample.MainActivity">
 
-    <item android:id="@+id/item1"
+    <item
+        android:id="@+id/item1"
         android:title="@string/Add_New"
-        app:showAsAction="ifRoom|withText">
-    </item>
+        app:showAsAction="ifRoom|withText" />
+
 </menu>

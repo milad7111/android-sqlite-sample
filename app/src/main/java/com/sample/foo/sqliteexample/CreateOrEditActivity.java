@@ -12,11 +12,9 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-
 public class CreateOrEditActivity extends AppCompatActivity implements View.OnClickListener {
 
-
-    private ExampleDBHelper dbHelper ;
+    private ExampleDBHelper dbHelper;
     EditText nameEditText;
     EditText genderEditText;
     EditText ageEditText;
@@ -30,25 +28,26 @@ public class CreateOrEditActivity extends AppCompatActivity implements View.OnCl
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_edit);
 
         personID = getIntent().getIntExtra(MainActivity.KEY_EXTRA_CONTACT_ID, 0);
 
-        setContentView(R.layout.activity_edit);
-        nameEditText = (EditText) findViewById(R.id.editTextName);
-        genderEditText = (EditText) findViewById(R.id.editTextGender);
-        ageEditText = (EditText) findViewById(R.id.editTextAge);
+        nameEditText = findViewById(R.id.editTextName);
+        genderEditText = findViewById(R.id.editTextGender);
+        ageEditText = findViewById(R.id.editTextAge);
 
-        saveButton = (Button) findViewById(R.id.saveButton);
+        saveButton = findViewById(R.id.saveButton);
+        buttonLayout = findViewById(R.id.buttonLayout);
+        editButton = findViewById(R.id.editButton);
+        deleteButton = findViewById(R.id.deleteButton);
+
         saveButton.setOnClickListener(this);
-        buttonLayout = (LinearLayout) findViewById(R.id.buttonLayout);
-        editButton = (Button) findViewById(R.id.editButton);
         editButton.setOnClickListener(this);
-        deleteButton = (Button) findViewById(R.id.deleteButton);
         deleteButton.setOnClickListener(this);
 
         dbHelper = new ExampleDBHelper(this);
 
-        if(personID > 0) {
+        if (personID > 0) {
             saveButton.setVisibility(View.GONE);
             buttonLayout.setVisibility(View.VISIBLE);
 
@@ -121,26 +120,23 @@ public class CreateOrEditActivity extends AppCompatActivity implements View.OnCl
     }
 
     public void persistPerson() {
-        if(personID > 0) {
-            if(dbHelper.updatePerson(personID, nameEditText.getText().toString(),
+        if (personID > 0) {
+            if (dbHelper.updatePerson(personID, nameEditText.getText().toString(),
                     genderEditText.getText().toString(),
                     Integer.parseInt(ageEditText.getText().toString()))) {
                 Toast.makeText(getApplicationContext(), "Person Update Successful", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
-            }
-            else {
+            } else {
                 Toast.makeText(getApplicationContext(), "Person Update Failed", Toast.LENGTH_SHORT).show();
             }
-        }
-        else {
-            if(dbHelper.insertPerson(nameEditText.getText().toString(),
+        } else {
+            if (dbHelper.insertPerson(nameEditText.getText().toString(),
                     genderEditText.getText().toString(),
                     Integer.parseInt(ageEditText.getText().toString()))) {
                 Toast.makeText(getApplicationContext(), "Person Inserted", Toast.LENGTH_SHORT).show();
-            }
-            else{
+            } else {
                 Toast.makeText(getApplicationContext(), "Could not Insert person", Toast.LENGTH_SHORT).show();
             }
             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
